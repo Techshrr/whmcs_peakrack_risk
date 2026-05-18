@@ -1,5 +1,12 @@
 # PeakRack Risk Upgrade Notes
 
+## 1.2.3
+
+- Repository layout only: the deployable addon now lives at repository root as `peakrack_risk/`.
+- Existing WHMCS installs do not need database changes for this release.
+- When updating manually, copy `peakrack_risk/` to `modules/addons/peakrack_risk/`.
+- Addon version bumped to `1.2.3`.
+
 ## 1.2.2
 
 - Repository layout only: deployable files now live under `whmcs_peakrack_risk/modules`.

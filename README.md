@@ -35,23 +35,20 @@ The module uses WHMCS `Capsule`, `localAPI`, addon module lifecycle functions, a
 
 ## Package Layout
 
-The repository keeps documentation at the root and deployable files inside the `whmcs_peakrack_risk` package directory:
+The repository root is intentionally shallow for GitHub browsing. The deployable addon is the `peakrack_risk` directory:
 
 ```text
-whmcs_peakrack_risk/
-  modules/
-    addons/
-      peakrack_risk/
+peakrack_risk/
 ```
 
-Upload or copy the `modules` directory inside `whmcs_peakrack_risk` to the root of your WHMCS installation. Do not upload the wrapper directory itself into the WHMCS root.
+Upload or copy `peakrack_risk` to `modules/addons/peakrack_risk/` in your WHMCS installation.
 
 ## Installation
 
 1. From this repository, upload:
 
    ```text
-   whmcs_peakrack_risk/modules
+   peakrack_risk/ -> modules/addons/peakrack_risk/
    ```
 
    to your WHMCS root directory. The final addon path should be:

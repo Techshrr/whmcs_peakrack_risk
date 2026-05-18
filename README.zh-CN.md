@@ -38,23 +38,20 @@ PeakRack Risk 是一个面向 WHMCS 的订单风险审核插件，用于结账�
 
 ## 文件结构
 
-仓库根目录保留说明文档，真正用于上传部署的文件放在 `whmcs_peakrack_risk` 发布目录中：
+仓库根目录改为更适合 GitHub 浏览的浅层结构，真正用于上传部署的插件目录就是 `peakrack_risk`：
 
 ```text
-whmcs_peakrack_risk/
-  modules/
-    addons/
-      peakrack_risk/
+peakrack_risk/
 ```
 
-安装时上传 `whmcs_peakrack_risk` 目录里的 `modules` 到 WHMCS 根目录。不要把外层 `whmcs_peakrack_risk` 包装目录本身上传到 WHMCS 根目录。
+安装时把 `peakrack_risk` 上传或覆盖到 WHMCS 的 `modules/addons/peakrack_risk/`。
 
 ## 安装方式
 
 1. 将仓库中的这个路径上传到 WHMCS 根目录：
 
    ```text
-   whmcs_peakrack_risk/modules
+   peakrack_risk/ -> modules/addons/peakrack_risk/
    ```
 
    上传后的最终插件路径应为：
