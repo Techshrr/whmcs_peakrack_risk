@@ -23,7 +23,7 @@
 
 ## 1.2.1
 
-- Removed the optional commercial license gate for the open-source release.
+- Simplified the open-source runtime bootstrap by removing unused optional gating.
 - Kept the checkout acknowledgement optimization so the same client session and IP does not see the checkout notice repeatedly after acknowledging it.
 - Addon version bumped to `1.2.1`.
 

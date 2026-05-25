@@ -12,6 +12,7 @@ and audit logging into a managed WHMCS addon.
 - Optionally marks high-risk orders as `Fraud` when automatic fraud action is enabled.
 - Shows a checkout acknowledgement notice before order submission.
 - Supports server-side checkout acknowledgement validation with nonce protection.
+- Allows browser-level checkout notice memory when repeated acknowledgement is not required for every session.
 - Provides editable Chinese and English checkout notice copy.
 - Includes English and Chinese admin UI labels.
 - Stores decision history, audit logs, and rule version snapshots.
@@ -80,6 +81,7 @@ Upload or copy `peakrack_risk` to `modules/addons/peakrack_risk/` in your WHMCS 
 - **Enable risk engine**: Enables or disables post-fraud-check scoring.
 - **Enable checkout notice**: Shows the checkout acknowledgement modal.
 - **Require server acknowledgement**: Requires a valid acknowledgement field and nonce during checkout submission.
+- **Checkout notice memory**: Days to remember confirmation in the same browser. Use `0` to keep confirmation scoped to the current session.
 - **Log only**: Records decisions without changing order status.
 - **Allow automatic FraudOrder**: Allows the addon to call `FraudOrder` for high-risk orders.
 - **Admin language**: Switches addon admin page labels between English and Chinese.
@@ -213,15 +215,18 @@ peakrack_risk/
 
 See [UPGRADE.md](UPGRADE.md) for release-by-release upgrade details.
 
-## Development Checks
+## Release Verification
 
-Run PHP syntax checks before packaging:
+Maintainers should complete these checks before publishing a release:
 
 ```powershell
 Get-ChildItem -Path peakrack_risk -Recurse -Filter *.php | ForEach-Object { php -l $_.FullName }
 ```
 
-Expected result: no syntax errors.
+- PHP syntax validation completes with no errors.
+- The addon activates cleanly on a WHMCS 9.x / PHP 8.3 environment.
+- Checkout acknowledgement is tested after changing notice or validation settings.
+- Upgrade notes and the addon version in `peakrack_risk.php` describe the same release.
 
 ## License
 

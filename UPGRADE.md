@@ -1,5 +1,12 @@
 # PeakRack Risk Upgrade Notes
 
+## 1.2.4
+
+- Added configurable checkout notice memory in days.
+- `0` keeps confirmation scoped to the current browser session; positive values remember confirmation in the same browser for the configured number of days.
+- The checkout acknowledgement script can reuse a valid remembered confirmation while still injecting the current server nonce for checkout validation.
+- Addon version bumped to `1.2.4`.
+
 ## 1.2.3
 
 - Repository layout only: the deployable addon now lives at repository root as `peakrack_risk/`.
@@ -16,7 +23,7 @@
 
 ## 1.2.1
 
-- Removed the optional commercial license gate for the open-source release.
+- Simplified the open-source runtime bootstrap by removing unused optional gating.
 - Kept the checkout acknowledgement optimization so the same client session and IP does not see the checkout notice repeatedly after acknowledging it.
 - Addon version bumped to `1.2.1`.
 
