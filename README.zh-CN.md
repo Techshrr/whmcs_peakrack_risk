@@ -1,5 +1,8 @@
 # PeakRack Risk for WHMCS
 
+> 官方仓库：https://github.com/Techshrr/whmcs_peakrack_risk
+> 许可证：Proprietary License
+
 [English](README.md) | [简体中文](README.zh-CN.md)
 
 PeakRack Risk 是一个面向 WHMCS 的订单风险审核插件，用于结账安全确认、订单风险评分、欺诈复核自动化和审计日志记录。
@@ -220,4 +223,10 @@ peakrack_risk/
 
 ## 许可协议
 
-MIT License。完整条款见仓库根目录 [LICENSE](LICENSE)。
+Proprietary License。完整条款见仓库根目录 [LICENSE](LICENSE)。
+
+## 许可证
+
+本项目基于 Proprietary License 发布。完整许可证请查看 [LICENSE](LICENSE)。
+
+其他项目声明请查看 [NOTICE](NOTICE)。

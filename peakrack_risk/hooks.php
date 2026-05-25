@@ -1,7 +1,15 @@
 <?php
+// SPDX-License-Identifier: LicenseRef-PeakRack-Proprietary
 
 /**
- * Runtime hooks for the PeakRack Risk addon.
+ * PeakRack Risk for WHMCS
+ *
+ * Official repository:
+ * https://github.com/Techshrr/whmcs_peakrack_risk
+ *
+ * Copyright (c) 2026 PeakRack. All rights reserved.
+ * Unauthorized copying, modification, distribution, sublicensing, or commercial use
+ * is prohibited without prior written permission.
  */
 
 if (!defined('WHMCS')) {

@@ -1,5 +1,8 @@
 # PeakRack Risk for WHMCS
 
+> Official repository: https://github.com/Techshrr/whmcs_peakrack_risk
+> License: Proprietary License
+
 PeakRack Risk is a WHMCS addon module for order risk review and checkout acknowledgement.
 It packages post-fraud-check scoring, configurable review rules, checkout security notices,
 and audit logging into a managed WHMCS addon.
@@ -217,4 +220,6 @@ See [UPGRADE.md](UPGRADE.md) for release-by-release upgrade details.
 
 ## License
 
-MIT License. See the repository `LICENSE` file for the full terms.
+This project is licensed under the Proprietary License. See [LICENSE](LICENSE) for details.
+
+Additional project notices are available in [NOTICE](NOTICE).

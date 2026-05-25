@@ -204,4 +204,4 @@ peakrack_risk/
 
 ## 许可协议
 
-MIT License。完整条款见仓库根目录 [LICENSE](../../../../LICENSE)。
+Proprietary License。完整条款见仓库根目录 [LICENSE](../../../../LICENSE) 和 [NOTICE](../../../../NOTICE)。

@@ -1,9 +1,15 @@
 <?php
+// SPDX-License-Identifier: LicenseRef-PeakRack-Proprietary
 
 /**
- * PeakRack Risk addon module for WHMCS.
+ * PeakRack Risk for WHMCS
  *
- * Target runtime: WHMCS 9.x / PHP 8.3.
+ * Official repository:
+ * https://github.com/Techshrr/whmcs_peakrack_risk
+ *
+ * Copyright (c) 2026 PeakRack. All rights reserved.
+ * Unauthorized copying, modification, distribution, sublicensing, or commercial use
+ * is prohibited without prior written permission.
  */
 
 use WHMCS\Database\Capsule;

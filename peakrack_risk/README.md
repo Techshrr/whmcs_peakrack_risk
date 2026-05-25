@@ -201,4 +201,4 @@ See [UPGRADE.md](UPGRADE.md) for release-by-release upgrade details.
 
 ## License
 
-MIT License. See the repository `LICENSE` file for the full terms.
+Proprietary License. See the repository `LICENSE` and `NOTICE` files for details.
