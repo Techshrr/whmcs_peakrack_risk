@@ -64,6 +64,7 @@ The module uses WHMCS `Capsule`, `localAPI`, addon module lifecycle functions, a
 - **Enable risk engine**: Enables or disables post-fraud-check scoring.
 - **Enable checkout notice**: Shows the checkout acknowledgement modal.
 - **Require server acknowledgement**: Requires a valid acknowledgement field and nonce during checkout submission.
+- **Checkout notice memory**: Days to remember confirmation in the same browser. Use `0` to keep confirmation scoped to the current session.
 - **Log only**: Records decisions without changing order status.
 - **Allow automatic FraudOrder**: Allows the addon to call `FraudOrder` for high-risk orders.
 - **Admin language**: Switches addon admin page labels between English and Chinese.

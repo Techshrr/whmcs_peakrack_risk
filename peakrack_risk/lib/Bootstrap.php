@@ -13,6 +13,7 @@ if (!function_exists('peakrackRiskDefaults')) {
             'enabled' => true,
             'checkoutEnabled' => true,
             'checkoutServerValidation' => true,
+            'checkoutRememberDays' => 0,
             'logOnly' => true,
             'autoFraud' => false,
             'adminLanguage' => 'en',
@@ -206,6 +207,7 @@ if (!function_exists('peakrackRiskMergeSettings')) {
         $settings['enabled'] = peakrackRiskBool($settings['enabled'] ?? $defaults['enabled']);
         $settings['checkoutEnabled'] = peakrackRiskBool($settings['checkoutEnabled'] ?? $defaults['checkoutEnabled']);
         $settings['checkoutServerValidation'] = peakrackRiskBool($settings['checkoutServerValidation'] ?? $defaults['checkoutServerValidation']);
+        $settings['checkoutRememberDays'] = peakrackRiskClampInt($settings['checkoutRememberDays'] ?? $defaults['checkoutRememberDays'], 0, 365, (int) $defaults['checkoutRememberDays']);
         $settings['logOnly'] = peakrackRiskBool($settings['logOnly'] ?? $defaults['logOnly']);
         $settings['autoFraud'] = peakrackRiskBool($settings['autoFraud'] ?? $defaults['autoFraud']);
         $settings['activityLogMirrorLevel'] = peakrackRiskNormalizeActivityLogLevel($settings['activityLogMirrorLevel'] ?? $defaults['activityLogMirrorLevel']);

@@ -22,7 +22,7 @@ function peakrack_risk_config(): array
     return [
         'name' => 'PeakRack Risk',
         'description' => 'Professional order risk review and checkout acknowledgement module for PeakRack.',
-        'version' => '1.2.3',
+        'version' => '1.2.4',
         'author' => 'PeakRack',
         'language' => 'english',
         'fields' => [],
@@ -348,6 +348,7 @@ function peakrack_risk_settings_from_post(array $current): array
     $settings['enabled'] = peakrackRiskBool($_POST['enabled'] ?? false);
     $settings['checkoutEnabled'] = peakrackRiskBool($_POST['checkoutEnabled'] ?? false);
     $settings['checkoutServerValidation'] = peakrackRiskBool($_POST['checkoutServerValidation'] ?? false);
+    $settings['checkoutRememberDays'] = (int) peakrack_risk_float_post('checkoutRememberDays', 0, 0, 365);
     $settings['logOnly'] = peakrackRiskBool($_POST['logOnly'] ?? false);
     $settings['autoFraud'] = peakrackRiskBool($_POST['autoFraud'] ?? false);
     $settings['emailVerifiedTrustEnabled'] = peakrackRiskBool($_POST['emailVerifiedTrustEnabled'] ?? false);
@@ -571,6 +572,9 @@ function peakrack_risk_render_admin(array $settings, string $message, string $me
                         <?php echo peakrack_risk_checkbox('logOnly', $t('log_only'), $settings['logOnly']); ?>
                         <?php echo peakrack_risk_checkbox('autoFraud', $t('allow_auto_fraud'), $settings['autoFraud']); ?>
                         <?php echo peakrack_risk_select('activityLogMirrorLevel', $t('activity_log_level'), (string) $settings['activityLogMirrorLevel'], ['warning' => $t('activity_log_warning'), 'error' => $t('activity_log_error'), 'info' => $t('activity_log_info'), 'disabled' => $t('activity_log_disabled')]); ?>
+                    </div>
+                    <div class="prk-form-grid" style="margin-top:14px">
+                        <?php echo peakrack_risk_input('checkoutRememberDays', $t('checkout_remember_days'), $settings['checkoutRememberDays'], 1, $t('checkout_remember_days_help')); ?>
                     </div>
                 </div>
             </div>

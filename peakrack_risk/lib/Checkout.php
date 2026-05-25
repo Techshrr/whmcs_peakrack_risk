@@ -132,6 +132,19 @@ if (!function_exists('peakrackCheckoutStorageKey')) {
     }
 }
 
+if (!function_exists('peakrackCheckoutRememberStorageKey')) {
+    function peakrackCheckoutRememberStorageKey(array $config, array $vars = []): string
+    {
+        $baseKey = (string) ($config['checkout']['storageKey'] ?? 'prk_checkout_ack_v2');
+        $scope = hash('sha256', implode('|', [
+            peakrackCheckoutClientId($vars),
+            peakrackCheckoutClientIp(),
+        ]));
+
+        return $baseKey . ':remember:' . substr($scope, 0, 16);
+    }
+}
+
 if (!function_exists('peakrackCheckoutJson')) {
     function peakrackCheckoutJson(array $payload): string
     {
@@ -162,7 +175,9 @@ if (!function_exists('peakrackCheckoutScript')) {
             'nonceFieldName' => $checkout['nonceFieldName'],
             'nonceValue' => $nonce,
             'storageKey' => peakrackCheckoutStorageKey($config, $vars),
+            'rememberStorageKey' => peakrackCheckoutRememberStorageKey($config, $vars),
             'acknowledged' => peakrackCheckoutIsSessionAcknowledged($vars),
+            'rememberDays' => max(0, (int) ($config['checkoutRememberDays'] ?? 0)),
             'messages' => peakrackCheckoutMessages($config, peakrackCheckoutIsChinese($vars)),
         ];
 
@@ -226,22 +241,79 @@ if (!function_exists('peakrackCheckoutScript')) {
         });
     }
 
+    function storageDriver() {
+        return Number(config.rememberDays || 0) > 0 ? window.localStorage : window.sessionStorage;
+    }
+
+    function storageKey() {
+        return Number(config.rememberDays || 0) > 0 && config.rememberStorageKey ? config.rememberStorageKey : config.storageKey;
+    }
+
+    function rememberMs() {
+        return Number(config.rememberDays || 0) * 86400000;
+    }
+
+    function nowMs() {
+        return Date.now ? Date.now() : new Date().getTime();
+    }
+
+    function clearAcknowledgement() {
+        try {
+            storageDriver().removeItem(storageKey());
+        } catch (e) {}
+    }
+
+    function readAcknowledgement() {
+        try {
+            var raw = storageDriver().getItem(storageKey());
+            if (!raw) {
+                return null;
+            }
+            if (raw === config.nonceValue) {
+                return { nonce: raw };
+            }
+            var parsed = JSON.parse(raw);
+            return parsed && typeof parsed === 'object' ? parsed : null;
+        } catch (e) {
+            return null;
+        }
+    }
+
     function hasAcknowledged() {
         if (config.acknowledged === true) {
             return true;
         }
 
-        try {
-            return window.sessionStorage.getItem(config.storageKey) === '1';
-        } catch (e) {
+        var data = readAcknowledgement();
+        if (!data) {
             return false;
         }
+
+        if (Number(config.rememberDays || 0) <= 0) {
+            return data.ack === true || data.nonce === config.nonceValue;
+        }
+
+        var expiresAt = Number(data.expiresAt || 0);
+        if (!expiresAt || expiresAt <= nowMs()) {
+            clearAcknowledgement();
+            return false;
+        }
+
+        return true;
     }
 
     function setAcknowledged() {
         config.acknowledged = true;
         try {
-            window.sessionStorage.setItem(config.storageKey, '1');
+            if (Number(config.rememberDays || 0) > 0) {
+                storageDriver().setItem(storageKey(), JSON.stringify({
+                    nonce: config.nonceValue,
+                    ack: true,
+                    expiresAt: nowMs() + rememberMs()
+                }));
+            } else {
+                storageDriver().setItem(storageKey(), JSON.stringify({ nonce: config.nonceValue, ack: true }));
+            }
         } catch (e) {}
         ensureAckFields();
     }
