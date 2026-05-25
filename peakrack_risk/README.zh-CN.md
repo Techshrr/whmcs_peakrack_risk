@@ -202,13 +202,6 @@ peakrack_risk/
 
 逐版本升级内容见 [UPGRADE.zh-CN.md](UPGRADE.zh-CN.md)。
 
-## 兼容性与实现说明
-
-- 面向 WHMCS 9.x 和 PHP 8.3 环境。
-- 通过 WHMCS Addon、Hook 和 localAPI 接口集成，不修改 WHMCS 核心文件。
-- 结账确认采用服务端校验和 nonce 防护，避免只依赖前端状态。
-- 持久化保存风险决策、审计日志和规则版本快照，便于后续复核。
-
 ## 许可协议
 
 MIT License。完整条款见仓库根目录 [LICENSE](../../../../LICENSE)。

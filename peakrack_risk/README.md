@@ -199,13 +199,6 @@ peakrack_risk/
 
 See [UPGRADE.md](UPGRADE.md) for release-by-release upgrade details.
 
-## Compatibility and Implementation
-
-- Targets WHMCS 9.x and PHP 8.3 environments.
-- Integrates through WHMCS addon, hook, and localAPI interfaces; WHMCS core files are not modified.
-- Validates checkout acknowledgement on the server with nonce protection.
-- Persists decisions, audit logs, and rule version snapshots for operational review.
-
 ## License
 
 MIT License. See the repository `LICENSE` file for the full terms.
