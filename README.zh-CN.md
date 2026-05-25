@@ -218,18 +218,12 @@ peakrack_risk/
 
 逐版本升级内容见 [UPGRADE.zh-CN.md](UPGRADE.zh-CN.md)。
 
-## 发布验证
+## 兼容性与实现说明
 
-维护者发布新版本前应完成以下验证：
-
-```powershell
-Get-ChildItem -Path peakrack_risk -Recurse -Filter *.php | ForEach-Object { php -l $_.FullName }
-```
-
-- PHP 语法检查全部通过。
-- 插件可在 WHMCS 9.x / PHP 8.3 环境正常启用。
-- 修改结账提醒或服务端校验配置后，完成一次实际结账流程测试。
-- `peakrack_risk.php` 中的插件版本号与升级说明记录保持一致。
+- 面向 WHMCS 9.x 和 PHP 8.3 环境。
+- 通过 WHMCS Addon、Hook 和 localAPI 接口集成，不修改 WHMCS 核心文件。
+- 结账确认采用服务端校验和 nonce 防护，避免只依赖前端状态。
+- 持久化保存风险决策、审计日志和规则版本快照，便于后续复核。
 
 ## 许可协议
 

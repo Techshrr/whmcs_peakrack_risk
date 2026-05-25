@@ -215,18 +215,12 @@ peakrack_risk/
 
 See [UPGRADE.md](UPGRADE.md) for release-by-release upgrade details.
 
-## Release Verification
+## Compatibility and Implementation
 
-Maintainers should complete these checks before publishing a release:
-
-```powershell
-Get-ChildItem -Path peakrack_risk -Recurse -Filter *.php | ForEach-Object { php -l $_.FullName }
-```
-
-- PHP syntax validation completes with no errors.
-- The addon activates cleanly on a WHMCS 9.x / PHP 8.3 environment.
-- Checkout acknowledgement is tested after changing notice or validation settings.
-- Upgrade notes and the addon version in `peakrack_risk.php` describe the same release.
+- Targets WHMCS 9.x and PHP 8.3 environments.
+- Integrates through WHMCS addon, hook, and localAPI interfaces; WHMCS core files are not modified.
+- Validates checkout acknowledgement on the server with nonce protection.
+- Persists decisions, audit logs, and rule version snapshots for operational review.
 
 ## License
 
