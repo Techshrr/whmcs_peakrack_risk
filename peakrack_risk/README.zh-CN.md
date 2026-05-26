@@ -204,4 +204,6 @@ peakrack_risk/
 
 ## 许可协议
 
-Proprietary License。完整条款见仓库根目录 [LICENSE](../../../../LICENSE) 和 [NOTICE](../../../../NOTICE)。
+Proprietary License。此可部署模块目录内已包含 [LICENSE](LICENSE) 和 [NOTICE](NOTICE)。
+
+授权、续期、再分发或书面许可请求请发送至 `legal@peakrack.com`。

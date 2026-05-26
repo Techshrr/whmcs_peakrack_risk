@@ -222,4 +222,6 @@ See [UPGRADE.md](UPGRADE.md) for release-by-release upgrade details.
 
 This project is licensed under the Proprietary License. See [LICENSE](LICENSE) for details.
 
+Licensing and written-permission requests should be sent to `legal@peakrack.com`.
+
 Additional project notices are available in [NOTICE](NOTICE).

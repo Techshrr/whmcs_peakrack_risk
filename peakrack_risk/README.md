@@ -201,4 +201,6 @@ See [UPGRADE.md](UPGRADE.md) for release-by-release upgrade details.
 
 ## License
 
-Proprietary License. See the repository `LICENSE` and `NOTICE` files for details.
+Proprietary License. See [LICENSE](LICENSE) and [NOTICE](NOTICE) in this deployable module directory.
+
+Licensing and written-permission requests should be sent to `legal@peakrack.com`.
