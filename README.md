@@ -15,9 +15,9 @@ and audit logging into a managed WHMCS addon.
 - Optionally marks high-risk orders as `Fraud` when automatic fraud action is enabled.
 - Shows a checkout acknowledgement notice before order submission.
 - Supports server-side checkout acknowledgement validation with nonce protection.
-- Allows browser-level checkout notice memory when repeated acknowledgement is not required for every session.
-- Provides editable Chinese and English checkout notice copy.
-- Includes English and Chinese admin UI labels.
+- Scopes checkout acknowledgement to the current browser, IP address, and cart contents so the same checkout flow is not interrupted twice.
+- Provides editable Simplified Chinese, Hong Kong Traditional Chinese, and English checkout notice copy.
+- Includes English and Chinese admin UI labels, with Traditional Chinese checkout text support.
 - Stores decision history, audit logs, and rule version snapshots.
 - Prunes old audit logs and rule snapshots during the WHMCS daily cron.
 - Controls how much audit data is mirrored into WHMCS Activity Log.
@@ -84,7 +84,7 @@ Upload or copy `peakrack_risk` to `modules/addons/peakrack_risk/` in your WHMCS 
 - **Enable risk engine**: Enables or disables post-fraud-check scoring.
 - **Enable checkout notice**: Shows the checkout acknowledgement modal.
 - **Require server acknowledgement**: Requires a valid acknowledgement field and nonce during checkout submission.
-- **Checkout notice memory**: Days to remember confirmation in the same browser. Use `0` to keep confirmation scoped to the current session.
+- **Checkout notice memory**: Days to remember confirmation in the same browser. Use `0` to keep confirmation scoped to the current session; the current browser, IP address, and cart contents are still part of the acknowledgement scope.
 - **Log only**: Records decisions without changing order status.
 - **Allow automatic FraudOrder**: Allows the addon to call `FraudOrder` for high-risk orders.
 - **Admin language**: Switches addon admin page labels between English and Chinese.
@@ -151,7 +151,7 @@ Editable fields:
 - Button text
 - Validation message
 
-Both Chinese and English notice text are supported.
+Simplified Chinese, Hong Kong Traditional Chinese, and English notice text are supported.
 
 ### Manual Order Tools
 

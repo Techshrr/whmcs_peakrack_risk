@@ -18,6 +18,61 @@ if (!defined('WHMCS')) {
     die('No direct access');
 }
 
+if (!function_exists('peakrackRiskTraditionalize')) {
+    function peakrackRiskTraditionalize(string $text): string
+    {
+        if ($text === '') {
+            return '';
+        }
+
+        $text = strtr($text, [
+            '订单审核提示' => '訂單審核提示',
+            '提交订单' => '提交訂單',
+            '确认并继续' => '確認並繼續',
+            '账户安全' => '帳戶安全',
+            '账户资料' => '帳戶資料',
+            '账单信息' => '帳單資料',
+            '付款信息' => '付款資料',
+            '人工审核' => '人工審核',
+            '事项' => '事項',
+            '稳定' => '穩定',
+            '信息' => '資訊',
+            '系统' => '系統',
+            '风险' => '風險',
+            '异常' => '異常',
+            '网络环境' => '網絡環境',
+            '请' => '請',
+        ]);
+
+        return strtr($text, [
+            '订' => '訂', '单' => '單', '审' => '審', '核' => '核', '确' => '確',
+            '认' => '認', '并' => '並', '继' => '繼', '续' => '續', '账' => '帳',
+            '户' => '戶', '资' => '資', '料' => '料', '网' => '網', '络' => '絡',
+            '环' => '環', '境' => '境', '为' => '為', '务' => '務', '开' => '開',
+            '与' => '與', '实' => '實', '际' => '際', '检' => '檢', '测' => '測',
+            '到' => '到', '异' => '異', '迟' => '遲', '处' => '處', '理' => '理',
+            '取' => '取', '消' => '消', '拒' => '拒', '绝' => '絕', '请' => '請',
+            '项' => '項', '稳' => '穩', '应' => '應', '统' => '統', '后' => '後',
+            '风' => '風', '险' => '險', '息' => '息',
+        ]);
+    }
+}
+
+if (!function_exists('peakrackRiskTraditionalizeArray')) {
+    function peakrackRiskTraditionalizeArray(array $values): array
+    {
+        foreach ($values as $key => $value) {
+            if (is_string($value)) {
+                $values[$key] = peakrackRiskTraditionalize($value);
+            } elseif (is_array($value)) {
+                $values[$key] = peakrackRiskTraditionalizeArray($value);
+            }
+        }
+
+        return $values;
+    }
+}
+
 if (!function_exists('peakrackRiskDefaults')) {
     function peakrackRiskDefaults(): array
     {
@@ -79,6 +134,18 @@ if (!function_exists('peakrackRiskDefaults')) {
                     'button' => '确认并继续',
                     'validation' => '请先确认订单审核提示后再提交订单。',
                 ],
+                'zh-hk' => [
+                    'title' => '訂單審核提示',
+                    'line1' => '為保障服務開通及帳戶安全，提交訂單前請確認以下事項：',
+                    'items' => [
+                        '請使用真實、穩定的網絡環境提交訂單，避免使用代理、VPN 或匿名網絡。',
+                        '帳戶資料、帳單資料及付款資料應與實際使用人資訊保持一致。',
+                        '如系統檢測到資訊不一致或異常行為，訂單可能需要人工審核後處理。',
+                    ],
+                    'footer' => '未按要求提交或存在異常風險的訂單，可能被延遲處理、取消或拒絕。',
+                    'button' => '確認並繼續',
+                    'validation' => '請先確認訂單審核提示後再提交訂單。',
+                ],
                 'en' => [
                     'title' => 'Order Review Notice',
                     'line1' => 'To protect account security and service delivery, please confirm the following before submitting your order:',
@@ -132,6 +199,18 @@ if (!function_exists('peakrackRiskMigrateCheckoutDefaults')) {
                 'button' => '我已了解并继续',
                 'validation' => '请先确认下单安全提醒后再提交订单。',
             ],
+            'zh-hk' => [
+                'title' => '下單安全提醒',
+                'line1' => '為確保您的訂單順利審核並及時交付，請在繼續前確認以下事項：',
+                'items' => [
+                    '請勿使用 VPN、代理或匿名網絡環境下單。',
+                    '帳戶國家/地區應與您的實際所在地及帳單資料一致。',
+                    '付款環境、帳單資料與帳戶資料不一致時，訂單可能進入人工審核。',
+                ],
+                'footer' => '異常或不一致的資訊可能導致訂單延遲處理，嚴重時可能被拒絕。',
+                'button' => '我已了解並繼續',
+                'validation' => '請先確認下單安全提醒後再提交訂單。',
+            ],
             'en' => [
                 'title' => 'Checkout Security Notice',
                 'line1' => 'To help us review and deliver your order promptly, please confirm the following before continuing:',
@@ -146,7 +225,7 @@ if (!function_exists('peakrackRiskMigrateCheckoutDefaults')) {
             ],
         ];
 
-        foreach (['zh', 'en'] as $language) {
+        foreach (['zh', 'zh-hk', 'en'] as $language) {
             foreach (['title', 'line1', 'footer', 'button', 'validation'] as $field) {
                 if (($settings['checkout'][$language][$field] ?? null) === $oldDefaults[$language][$field]) {
                     $settings['checkout'][$language][$field] = $defaults['checkout'][$language][$field];
@@ -175,19 +254,26 @@ if (!function_exists('peakrackRiskMergeSettings')) {
             $settings['checkout'] = $defaults['checkout'];
         }
 
-        foreach (['zh', 'en'] as $language) {
+        $storedHasTraditionalCheckout = isset($stored['checkout']['zh-hk']) && is_array($stored['checkout']['zh-hk']);
+        $traditionalFallback = peakrackRiskTraditionalizeArray((array) ($settings['checkout']['zh'] ?? $defaults['checkout']['zh']));
+
+        foreach (['zh', 'zh-hk', 'en'] as $language) {
             if (!isset($settings['checkout'][$language]) || !is_array($settings['checkout'][$language])) {
-                $settings['checkout'][$language] = $defaults['checkout'][$language];
+                $settings['checkout'][$language] = $language === 'zh-hk' ? $traditionalFallback : $defaults['checkout'][$language];
             }
 
             foreach (['title', 'line1', 'footer', 'button', 'validation'] as $field) {
                 if (!isset($settings['checkout'][$language][$field]) || !is_scalar($settings['checkout'][$language][$field])) {
-                    $settings['checkout'][$language][$field] = $defaults['checkout'][$language][$field];
+                    $settings['checkout'][$language][$field] = $language === 'zh-hk'
+                        ? (string) ($traditionalFallback[$field] ?? $defaults['checkout']['zh-hk'][$field])
+                        : $defaults['checkout'][$language][$field];
                 }
             }
 
             if (!isset($settings['checkout'][$language]['items']) || !is_array($settings['checkout'][$language]['items'])) {
-                $settings['checkout'][$language]['items'] = $defaults['checkout'][$language]['items'];
+                $settings['checkout'][$language]['items'] = $language === 'zh-hk'
+                    ? (array) ($traditionalFallback['items'] ?? $defaults['checkout']['zh-hk']['items'])
+                    : $defaults['checkout'][$language]['items'];
             }
         }
 
@@ -206,10 +292,14 @@ if (!function_exists('peakrackRiskMergeSettings')) {
             }
         }
 
-        foreach (['zh', 'en'] as $language) {
+        foreach (['zh', 'zh-hk', 'en'] as $language) {
             if (isset($stored['checkout'][$language]['items']) && is_array($stored['checkout'][$language]['items'])) {
                 $settings['checkout'][$language]['items'] = $stored['checkout'][$language]['items'];
             }
+        }
+
+        if (!$storedHasTraditionalCheckout) {
+            $settings['checkout']['zh-hk'] = peakrackRiskTraditionalizeArray($settings['checkout']['zh']);
         }
 
         $settings = peakrackRiskMigrateCheckoutDefaults($defaults, $settings);

@@ -29,8 +29,76 @@ if (!function_exists('peakrackCheckoutIsCheckoutPage')) {
 if (!function_exists('peakrackCheckoutIsChinese')) {
     function peakrackCheckoutIsChinese(array $vars = []): bool
     {
-        $language = strtolower((string) ($vars['language'] ?? ($_SESSION['Language'] ?? '')));
-        return str_contains($language, 'chinese') || str_contains($language, 'zh');
+        return peakrackCheckoutLocale($vars) !== 'en';
+    }
+}
+
+if (!function_exists('peakrackCheckoutLocale')) {
+    function peakrackCheckoutLocale(array $vars = []): string
+    {
+        $language = strtolower(str_replace('_', '-', (string) ($vars['language'] ?? ($_SESSION['Language'] ?? ''))));
+        if ($language === '') {
+            $language = strtolower(str_replace('_', '-', (string) ($_SESSION['language'] ?? '')));
+        }
+
+        if (
+            str_contains($language, 'chinese-hk')
+            || str_contains($language, 'zh-hk')
+            || str_contains($language, 'hongkong')
+            || str_contains($language, 'hong-kong')
+            || str_contains($language, 'hant')
+            || str_contains($language, 'traditional')
+            || str_contains($language, '繁體')
+            || str_contains($language, '繁体')
+        ) {
+            return 'zh-hk';
+        }
+
+        return str_contains($language, 'chinese') || str_contains($language, 'zh') ? 'zh' : 'en';
+    }
+}
+
+if (!function_exists('peakrackCheckoutTraditionalize')) {
+    function peakrackCheckoutTraditionalize(string $text): string
+    {
+        if (function_exists('peakrackRiskTraditionalize')) {
+            return peakrackRiskTraditionalize($text);
+        }
+
+        if ($text === '') {
+            return '';
+        }
+
+        $text = strtr($text, [
+            '订单审核提示' => '訂單審核提示',
+            '提交订单' => '提交訂單',
+            '确认并继续' => '確認並繼續',
+            '账户安全' => '帳戶安全',
+            '账户资料' => '帳戶資料',
+            '账单信息' => '帳單資料',
+            '付款信息' => '付款資料',
+            '人工审核' => '人工審核',
+            '事项' => '事項',
+            '稳定' => '穩定',
+            '信息' => '資訊',
+            '系统' => '系統',
+            '风险' => '風險',
+            '异常' => '異常',
+            '网络环境' => '網絡環境',
+            '请' => '請',
+        ]);
+
+        return strtr($text, [
+            '订' => '訂', '单' => '單', '审' => '審', '核' => '核', '确' => '確',
+            '认' => '認', '并' => '並', '继' => '繼', '续' => '續', '账' => '帳',
+            '户' => '戶', '资' => '資', '料' => '料', '网' => '網', '络' => '絡',
+            '环' => '環', '境' => '境', '为' => '為', '务' => '務', '开' => '開',
+            '与' => '與', '实' => '實', '际' => '際', '检' => '檢', '测' => '測',
+            '到' => '到', '异' => '異', '迟' => '遲', '处' => '處', '理' => '理',
+            '取' => '取', '消' => '消', '拒' => '拒', '绝' => '絕', '请' => '請',
+            '项' => '項', '稳' => '穩', '应' => '應', '统' => '統', '后' => '後',
+            '风' => '風', '险' => '險', '息' => '息',
+        ]);
     }
 }
 
@@ -69,13 +137,116 @@ if (!function_exists('peakrackCheckoutClientIp')) {
     }
 }
 
+if (!function_exists('peakrackCheckoutNormalizeFlowValue')) {
+    function peakrackCheckoutNormalizeFlowValue(mixed $value): mixed
+    {
+        if (is_object($value)) {
+            $value = get_object_vars($value);
+        }
+
+        if (!is_array($value)) {
+            return is_scalar($value) || $value === null ? $value : (string) $value;
+        }
+
+        $normalized = [];
+        foreach ($value as $key => $item) {
+            $keyName = strtolower((string) $key);
+            if (in_array($keyName, [
+                'uid',
+                'userid',
+                'clientid',
+                'client_id',
+                'clientdetails',
+                'clientsdetails',
+                'contactid',
+                'contact_id',
+                'paymentmethod',
+                'ccinfo',
+                'token',
+                'nonce',
+                'captcha',
+                'password',
+                'checkout',
+                'validate',
+                'validation',
+                'error',
+                'errors',
+            ], true)) {
+                continue;
+            }
+
+            $normalized[$key] = peakrackCheckoutNormalizeFlowValue($item);
+        }
+
+        $isList = $normalized === [] || array_keys($normalized) === range(0, count($normalized) - 1);
+        if (!$isList) {
+            ksort($normalized);
+        }
+
+        return $normalized;
+    }
+}
+
+if (!function_exists('peakrackCheckoutFlowData')) {
+    function peakrackCheckoutFlowData(): array
+    {
+        $cart = $_SESSION['cart'] ?? [];
+        if (!is_array($cart) || $cart === []) {
+            return ['cart' => 'empty'];
+        }
+
+        $flow = [];
+        foreach ([
+            'products',
+            'domains',
+            'addons',
+            'renewals',
+            'domainrenewals',
+            'serviceRenewals',
+            'bundles',
+            'bundle',
+            'promo',
+            'promocode',
+            'currency',
+        ] as $key) {
+            if (array_key_exists($key, $cart)) {
+                $flow[$key] = peakrackCheckoutNormalizeFlowValue($cart[$key]);
+            }
+        }
+
+        if ($flow === []) {
+            $flow = ['cart' => peakrackCheckoutNormalizeFlowValue($cart)];
+        }
+
+        ksort($flow);
+        return $flow;
+    }
+}
+
+if (!function_exists('peakrackCheckoutFlowId')) {
+    function peakrackCheckoutFlowId(): string
+    {
+        $json = json_encode(peakrackCheckoutFlowData(), JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        return hash('sha256', is_string($json) ? $json : 'cart-checkout');
+    }
+}
+
+if (!function_exists('peakrackCheckoutBrowserScope')) {
+    function peakrackCheckoutBrowserScope(): string
+    {
+        return hash('sha256', implode('|', [
+            peakrackCheckoutFlowId(),
+            peakrackCheckoutClientIp(),
+        ]));
+    }
+}
+
 if (!function_exists('peakrackCheckoutScope')) {
     function peakrackCheckoutScope(array $vars = []): string
     {
         return hash('sha256', implode('|', [
             session_id(),
-            peakrackCheckoutClientId($vars),
-            peakrackCheckoutClientIp(),
+            peakrackCheckoutBrowserScope(),
         ]));
     }
 }
@@ -140,7 +311,7 @@ if (!function_exists('peakrackCheckoutStorageKey')) {
     function peakrackCheckoutStorageKey(array $config, array $vars = []): string
     {
         $baseKey = (string) ($config['checkout']['storageKey'] ?? 'prk_checkout_ack_v2');
-        return $baseKey . ':' . substr(peakrackCheckoutScope($vars), 0, 16);
+        return $baseKey . ':' . substr(peakrackCheckoutBrowserScope(), 0, 16);
     }
 }
 
@@ -148,12 +319,7 @@ if (!function_exists('peakrackCheckoutRememberStorageKey')) {
     function peakrackCheckoutRememberStorageKey(array $config, array $vars = []): string
     {
         $baseKey = (string) ($config['checkout']['storageKey'] ?? 'prk_checkout_ack_v2');
-        $scope = hash('sha256', implode('|', [
-            peakrackCheckoutClientId($vars),
-            peakrackCheckoutClientIp(),
-        ]));
-
-        return $baseKey . ':remember:' . substr($scope, 0, 16);
+        return $baseKey . ':remember:' . substr(peakrackCheckoutBrowserScope(), 0, 16);
     }
 }
 
@@ -170,9 +336,27 @@ if (!function_exists('peakrackCheckoutJson')) {
 }
 
 if (!function_exists('peakrackCheckoutMessages')) {
-    function peakrackCheckoutMessages(array $config, bool $isChinese): array
+    function peakrackCheckoutMessages(array $config, bool|string $locale): array
     {
-        return $isChinese ? $config['checkout']['zh'] : $config['checkout']['en'];
+        if (is_bool($locale)) {
+            $locale = $locale ? 'zh' : 'en';
+        }
+        if ($locale === 'zh-hk') {
+            if (isset($config['checkout']['zh-hk']) && is_array($config['checkout']['zh-hk'])) {
+                return $config['checkout']['zh-hk'];
+            }
+
+            $messages = $config['checkout']['zh'];
+            array_walk_recursive($messages, static function (&$value): void {
+                if (is_string($value)) {
+                    $value = peakrackCheckoutTraditionalize($value);
+                }
+            });
+
+            return $messages;
+        }
+
+        return $locale === 'zh' ? $config['checkout']['zh'] : $config['checkout']['en'];
     }
 }
 
@@ -190,7 +374,7 @@ if (!function_exists('peakrackCheckoutScript')) {
             'rememberStorageKey' => peakrackCheckoutRememberStorageKey($config, $vars),
             'acknowledged' => peakrackCheckoutIsSessionAcknowledged($vars),
             'rememberDays' => max(0, (int) ($config['checkoutRememberDays'] ?? 0)),
-            'messages' => peakrackCheckoutMessages($config, peakrackCheckoutIsChinese($vars)),
+            'messages' => peakrackCheckoutMessages($config, peakrackCheckoutLocale($vars)),
         ];
 
         $json = peakrackCheckoutJson($payload);

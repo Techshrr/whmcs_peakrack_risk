@@ -1,5 +1,14 @@
 # PeakRack Risk Upgrade Notes
 
+## 1.2.5
+
+- Adds Hong Kong Traditional Chinese checkout notice text and fallback conversion for existing Simplified Chinese checkout copy.
+- Checkout acknowledgement is now scoped to the current browser, IP address, and cart contents. A guest acknowledgement can continue through the same login-and-checkout flow, but a different IP address or changed cart requires a new acknowledgement.
+- Existing thresholds, rules, allowlists, checkout notice settings, audit logs, and decision history are preserved.
+- Existing WHMCS installs do not need database changes for this release.
+- The addon admin page now includes a GitHub shortcut and a browser-side update notice. No server-side migration is required for this admin display.
+- Addon version bumped to `1.2.5`.
+
 ## 1.2.4
 
 - Added configurable checkout notice memory in days.

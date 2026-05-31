@@ -58,7 +58,7 @@ add_hook('ShoppingCartValidateCheckout', 1, static function (array $vars): array
         return [];
     }
 
-    $messages = peakrackCheckoutMessages($config, peakrackCheckoutIsChinese($vars));
+    $messages = peakrackCheckoutMessages($config, peakrackCheckoutLocale($vars));
     return [$messages['validation']];
 });
 

@@ -28,7 +28,7 @@ function peakrack_risk_config(): array
     return [
         'name' => 'PeakRack Risk',
         'description' => 'Professional order risk review and checkout acknowledgement module for PeakRack.',
-        'version' => '1.2.4',
+        'version' => '1.2.5',
         'author' => 'PeakRack',
         'language' => 'english',
         'fields' => [],
@@ -388,7 +388,7 @@ function peakrack_risk_settings_from_post(array $current): array
         $settings['weights'][$key] = peakrack_risk_float_post('weight_' . $key, (float) $settings['weights'][$key], -100.0, 100.0);
     }
 
-    foreach (['zh', 'en'] as $language) {
+    foreach (['zh', 'zh-hk', 'en'] as $language) {
         foreach (['title', 'line1', 'footer', 'button', 'validation'] as $field) {
             $posted = trim((string) ($_POST['checkout_' . $language . '_' . $field] ?? ''));
             if ($posted !== '') {
@@ -420,6 +420,18 @@ function peakrack_risk_e(mixed $value): string
     return htmlspecialchars((string) $value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
+function peakrack_risk_github_icon(): string
+{
+    return '<svg aria-hidden="true" viewBox="0 0 16 16" width="14" height="14" focusable="false" style="display:inline-block;vertical-align:-2px;margin-right:4px;fill:currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82A7.64 7.64 0 0 1 8 3.86c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>';
+}
+
+function peakrack_risk_github_admin_html(): string
+{
+    return '<a class="btn btn-default btn-sm prk-github-link" href="https://github.com/Techshrr/whmcs_peakrack_risk" target="_blank" rel="noopener noreferrer" title="GitHub repository">' . peakrack_risk_github_icon() . 'GitHub</a>'
+        . '<a class="btn btn-warning btn-sm prk-update-badge" href="https://github.com/Techshrr/whmcs_peakrack_risk/releases" target="_blank" rel="noopener noreferrer" data-prk-github-update data-prk-github-repo="Techshrr/whmcs_peakrack_risk" data-prk-github-current="1.2.5" data-prk-github-label="New version {version}" style="display:none"></a>'
+        . '<script>(function(){if(window.PeakRackGithubUpdateCheck){window.PeakRackGithubUpdateCheck();return;}window.PeakRackGithubUpdateCheck=function(){var nodes=document.querySelectorAll("[data-prk-github-update]");if(!nodes.length||!window.fetch){return;}function normalize(v){return String(v||"").replace(/^v/i,"").replace(/[^0-9A-Za-z.\\-+]/g,"");}function compare(a,b){var aa=normalize(a).split(/[.\\-+]/),bb=normalize(b).split(/[.\\-+]/),len=Math.max(aa.length,bb.length);for(var i=0;i<len;i++){var av=aa[i]||"",bv=bb[i]||"";if(av===""&&bv!==""){return 1;}if(av!==""&&bv===""){return -1;}var an=/^\\d+$/.test(av),bn=/^\\d+$/.test(bv);if(an&&bn){var ai=parseInt(av,10),bi=parseInt(bv,10);if(ai!==bi){return ai>bi?1:-1;}}else if(av!==bv){return av>bv?1:-1;}}return 0;}function readCache(repo){try{var raw=localStorage.getItem("peakrack.github.update."+repo);if(!raw){return null;}var data=JSON.parse(raw);if(!data||!data.checkedAt||Date.now()-data.checkedAt>43200000){return null;}return data;}catch(e){return null;}}function writeCache(repo,data){try{data.checkedAt=Date.now();localStorage.setItem("peakrack.github.update."+repo,JSON.stringify(data));}catch(e){}}function fetchJson(url){var controller=window.AbortController?new AbortController():null;var timer=controller?window.setTimeout(function(){controller.abort();},2000):null;return fetch(url,{headers:{Accept:"application/vnd.github+json"},signal:controller?controller.signal:undefined}).then(function(resp){if(timer){window.clearTimeout(timer);}if(!resp.ok){throw new Error("http");}return resp.json();}).catch(function(err){if(timer){window.clearTimeout(timer);}throw err;});}function latest(repo){var base="https://api.github.com/repos/"+repo;return fetchJson(base+"/releases/latest").then(function(data){return{version:data.tag_name||"",url:data.html_url||("https://github.com/"+repo+"/releases")};}).catch(function(){return fetchJson(base+"/tags?per_page=1").then(function(tags){var tag=tags&&tags[0]?tags[0].name:"";return{version:tag,url:tag?("https://github.com/"+repo+"/releases/tag/"+encodeURIComponent(tag)):("https://github.com/"+repo+"/releases")};});});}function apply(node,info){var current=node.getAttribute("data-prk-github-current")||"";if(info&&info.version&&compare(info.version,current)>0){node.href=info.url||node.href;node.textContent=(node.getAttribute("data-prk-github-label")||"New version {version}").replace("{version}",info.version);node.style.display="inline-flex";}}Array.prototype.forEach.call(nodes,function(node){var repo=node.getAttribute("data-prk-github-repo")||"";if(!repo){return;}var cached=readCache(repo);if(cached){apply(node,cached);return;}latest(repo).then(function(info){writeCache(repo,info);apply(node,info);}).catch(function(){});});};window.PeakRackGithubUpdateCheck();})();</script>';
+}
+
 function peakrack_risk_lines(array $items): string
 {
     return implode("\n", array_map(static fn($item): string => (string) $item, $items));
@@ -448,6 +460,7 @@ function peakrack_risk_render_admin(array $settings, string $message, string $me
         .prk-title{margin:0 0 4px;font-size:24px;font-weight:700;color:#111827}
         .prk-subtitle{margin:0;color:#6b7280;font-size:13px;line-height:1.5}
         .prk-save{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end;justify-content:flex-end;flex-shrink:0}
+        .prk-update-badge{font-weight:700}
         .prk-lang{display:inline-flex;border:1px solid #cfd8e3;border-radius:6px;background:#fff;overflow:hidden}
         .prk-lang a{display:inline-flex;align-items:center;padding:8px 10px;color:#475569;text-decoration:none;font-size:12px;font-weight:700}
         .prk-lang a.active{background:#2563eb;color:#fff}
@@ -508,6 +521,7 @@ function peakrack_risk_render_admin(array $settings, string $message, string $me
                 <p class="prk-subtitle"><?php echo peakrack_risk_e($t('subtitle')); ?></p>
             </div>
             <div class="prk-save">
+                <?php echo peakrack_risk_github_admin_html(); ?>
                 <div class="prk-lang" aria-label="<?php echo peakrack_risk_e($t('admin_language')); ?>">
                     <a class="<?php echo $language === 'zh' ? 'active' : ''; ?>" href="<?php echo peakrack_risk_e(peakrack_risk_admin_url('zh')); ?>">中文</a>
                     <a class="<?php echo $language === 'en' ? 'active' : ''; ?>" href="<?php echo peakrack_risk_e(peakrack_risk_admin_url('en')); ?>">English</a>
@@ -673,7 +687,7 @@ function peakrack_risk_render_admin(array $settings, string $message, string $me
                 </div>
                 <div class="prk-card-body">
                     <div class="prk-language-grid">
-                        <?php foreach (['zh' => 'Chinese', 'en' => 'English'] as $checkoutLanguage => $label): ?>
+                        <?php foreach (['zh' => 'Chinese', 'zh-hk' => 'Hong Kong Traditional Chinese', 'en' => 'English'] as $checkoutLanguage => $label): ?>
                             <div class="prk-language-panel">
                                 <h4 class="prk-language-title"><?php echo peakrack_risk_e(peakrack_risk_checkout_language_label($checkoutLanguage, $language)); ?></h4>
                                 <div class="prk-language-body">
@@ -1101,12 +1115,12 @@ function peakrack_risk_weight_label(string $key, string $language): string
 function peakrack_risk_checkout_language_label(string $checkoutLanguage, string $adminLanguage): string
 {
     $labels = [
-        'en' => ['zh' => 'Chinese Notice', 'en' => 'English Notice'],
-        'zh' => ['zh' => '中文提醒文案', 'en' => '英文提醒文案'],
+        'en' => ['zh' => 'Simplified Chinese Notice', 'zh-hk' => 'Hong Kong Traditional Chinese Notice', 'en' => 'English Notice'],
+        'zh' => ['zh' => '简体中文提醒文案', 'zh-hk' => '香港繁体提醒文案', 'en' => '英文提醒文案'],
     ];
 
     $adminLanguage = in_array($adminLanguage, ['en', 'zh'], true) ? $adminLanguage : 'en';
-    $checkoutLanguage = in_array($checkoutLanguage, ['en', 'zh'], true) ? $checkoutLanguage : 'en';
+    $checkoutLanguage = in_array($checkoutLanguage, ['en', 'zh', 'zh-hk'], true) ? $checkoutLanguage : 'en';
     return $labels[$adminLanguage][$checkoutLanguage];
 }
 
@@ -1121,6 +1135,14 @@ function peakrack_risk_checkout_field_label(string $checkoutLanguage, string $fi
                 'footer' => 'Chinese note',
                 'button' => 'Chinese button',
                 'validation' => 'Chinese validation message',
+            ],
+            'zh-hk' => [
+                'title' => 'Hong Kong Traditional Chinese title',
+                'line1' => 'Hong Kong Traditional Chinese introduction',
+                'items' => 'Hong Kong Traditional Chinese bullet points',
+                'footer' => 'Hong Kong Traditional Chinese note',
+                'button' => 'Hong Kong Traditional Chinese button',
+                'validation' => 'Hong Kong Traditional Chinese validation message',
             ],
             'en' => [
                 'title' => 'English title',
@@ -1140,6 +1162,14 @@ function peakrack_risk_checkout_field_label(string $checkoutLanguage, string $fi
                 'button' => '中文按钮',
                 'validation' => '中文校验提示',
             ],
+            'zh-hk' => [
+                'title' => '香港繁体标题',
+                'line1' => '香港繁体说明',
+                'items' => '香港繁体列表项',
+                'footer' => '香港繁体提示',
+                'button' => '香港繁体按钮',
+                'validation' => '香港繁体校验提示',
+            ],
             'en' => [
                 'title' => '英文标题',
                 'line1' => '英文说明',
@@ -1152,6 +1182,6 @@ function peakrack_risk_checkout_field_label(string $checkoutLanguage, string $fi
     ];
 
     $adminLanguage = in_array($adminLanguage, ['en', 'zh'], true) ? $adminLanguage : 'en';
-    $checkoutLanguage = in_array($checkoutLanguage, ['en', 'zh'], true) ? $checkoutLanguage : 'en';
+    $checkoutLanguage = in_array($checkoutLanguage, ['en', 'zh', 'zh-hk'], true) ? $checkoutLanguage : 'en';
     return $labels[$adminLanguage][$checkoutLanguage][$field] ?? $field;
 }
